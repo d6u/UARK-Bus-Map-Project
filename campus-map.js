@@ -77,7 +77,7 @@
 		}
 	}
 	function drawPath(id) { // DRAW ROUTE PATH
-		if (routes[id.n].inService == 1 || routes[id.rd].inService == 1) {
+		if ( (routes[id.n] && routes[id.n].inService == 1) || (routes[id.rd] && routes[id.rd].inService == 1) ) {
 			var current_id = routes[id.n].inService == 1 ? id.n : id.rd;
 			var shape = routes[current_id].shape,
 				points = shape.split(','),
@@ -143,5 +143,6 @@
 		$('#menu-overlay').css({display: 'none'});
 		showRoute(rt_code);
 	});
+	w.rt = routes;
 })(window);
 
