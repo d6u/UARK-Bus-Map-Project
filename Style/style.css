@@ -1,0 +1,148 @@
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+}
+/* MENU */
+#menu-overlay {
+	position: absolute;
+	z-index: 10;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	background: rgba(0, 0, 0, .8);
+}
+#menu {
+	background: white;
+	position: absolute;
+	z-index: 10;
+	top: 50px;
+	left: 50%;
+	margin-left: -150px;
+}
+tr {
+	height: 80px;
+	border-bottom: 1px solid #d6d6d6;
+}
+tr:last-child {
+	border-bottom: none;
+}
+td {
+	width: 75px;
+	border-right: 1px solid #d6d6d6;
+}
+td:last-child {
+	border-right: none;
+}
+a.menu-item {
+	display: inline-block;
+	height: 80px;
+	width: 75px;
+	float: left;
+	position: relative;
+	text-decoration: none;
+	color: #666;
+}
+.menu-color {
+	display: block;
+	position: absolute;
+	width: 55px;
+	height: 30px;
+	top: 10px;
+	left: 10px;
+	border-radius: 2px;
+}
+.menu-title {
+	font-size: 14px;
+	display: block;
+	margin-top: 50px;
+	text-align: center;
+}
+/* MAP CANVAS */
+#map_canvas {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+}
+/* COLOR & TITLE */
+a.blue .menu-color {
+	background: #00A8DE;
+}
+a.blue .menu-title::after {
+	content: 'Blue';
+}
+a.brown .menu-color {
+	background: #ce6b29;
+}
+a.brown .menu-title::after {
+	content: 'Brown';
+}
+a.gray .menu-color {
+	background: #d6d6d6;
+}
+a.gray .menu-title::after {
+	content: 'Gray';
+}
+a.green .menu-color {
+	background: #00A054;
+}
+a.green .menu-title::after {
+	content: 'Green';
+}
+a.mapleHill .menu-color {
+	background: black;
+}
+a.mapleHill .menu-title::after {
+	content: 'Maple Hill';
+}
+a.pomfret .menu-color {
+	background: black;
+}
+a.pomfret .menu-title::after {
+	content: 'Pomfret';
+}
+a.purple .menu-color {
+	background: #9C298C;
+}
+a.purple .menu-title::after {
+	content: 'Purple';
+}
+a.red .menu-color {
+	background: #EA2B3B;
+}
+a.red .menu-title::after {
+	content: 'Red';
+}
+a.route56 .menu-color {
+	background: black;
+}
+a.route56 .menu-title::after {
+	content: 'Route 56';
+}
+a.tan .menu-color {
+	background: #f29557;
+}
+a.tan .menu-title::after {
+	content: 'Tan';
+}
+a.yellow .menu-color {
+	background: #FCE92B;
+}
+a.yellow .menu-title::after {
+	content: 'Yellow';
+}
+a.more .menu-color {
+	background: #666;
+}
+a.more .menu-title::after {
+	content: 'More';
+}
+
+
+
+
+
+
+
