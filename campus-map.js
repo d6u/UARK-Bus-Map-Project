@@ -1,4 +1,4 @@
-(function (w) {
+(function (w, routes, buses) {
 	var touch = (mobileBrowser) ? 'touchend' : 'click', // mapping touchend and click event
 		// MODERNIZR TRANSITION END EVENT
 		transEndEventNames = {
