@@ -22,6 +22,7 @@
 		// INIT ROUTES STORAGE
 		routes = {},
 		buses = [];
+		stops = {};
 	// DECLEAR FUNCTIONS
 	function translate (color) { // TRANSLATE COLOR INTO ROUTE ID
 		var code = {n: null, rd: null};
@@ -74,8 +75,10 @@
 			setInterval(function () {
 				pinBus(bus_id);
 			}, 4000);
+			pinStops(bus_id);
 		}
 	}
+	
 	function drawPath(id) { // DRAW ROUTE PATH
 		if ( (routes[id.n] && routes[id.n].inService == 1) || (routes[id.rd] && routes[id.rd].inService == 1) ) {
 			var current_id = routes[id.n].inService == 1 ? id.n : id.rd;
@@ -117,6 +120,31 @@
 			}
 		});
 	}
+	function pinStops(bus_id){
+		var url = 'http://campusdata.uark.edu/api/stops?callback=?&routeIds=' + bus_id;
+		//var url = 'http://campusdata.uark.edu/api/stops';
+		$.getJSON(url, function (data) {
+		//	console.log(data);
+			for (var i = 0; i < data.length; i++)
+			{
+				var lat = data[i].latitude,
+					lng = data[i].longitude;
+				var new_stop = new google.maps.Marker({
+					position: new google.maps.LatLng(lat, lng),
+					map: map,
+					title: "hello world"
+					});
+				
+			}
+		});
+/*		var myLatlng = new google.maps.LatLng(36.068000, -94.172500);
+		var makrer = new google.maps.Marker({
+			position: myLatlng,
+			map: map,
+			title: "hello world"
+		});
+*/
+	}
 	// LOAD ROUTES INFO
 	$.ajax({
 		url: 'http://campusdata.uark.edu/api/routes',
@@ -136,6 +164,20 @@
 			alert('ERROR');
 		}
 	});
+	$.ajax({
+		url: 'http://campusdata.uark.edu/api/stops',
+		data: {},
+		dataType : 'jsonp',
+		jsonp:'callback',
+		jsonpCallback: 'stops',
+		cache: 'true',
+		success: function (response){
+			$.each(response, function(key, val){
+				stops[val.id] = val;
+			});
+		}
+
+	})
 	// ATTACH EVENT TO MENU BUTTON
 	$('#menu').on(touch, 'a', function (e) {
 		var rt_color = $(this).attr('class').split(' ')[1],
