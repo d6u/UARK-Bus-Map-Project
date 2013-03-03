@@ -1,4 +1,4 @@
-(function (w, routes, buses) {
+$(document).ready(function() {
 	var touch = (mobileBrowser) ? 'touchend' : 'click', // mapping touchend and click event
 		// MODERNIZR TRANSITION END EVENT
 		transEndEventNames = {
@@ -159,6 +159,10 @@
 					routes[val.id] = val; // 19:PURPLE 24:PURPLE REDUCED
 				}
 			});
+			if (location.hash != "") {
+				var a = $('#menu a[href='+location.hash+']');
+				$(a[0]).trigger(touch);
+			};
 		},
 		error: function () {
 			alert('ERROR');
@@ -185,6 +189,24 @@
 		$('#menu-overlay').css({display: 'none'});
 		showRoute(rt_code);
 	});
-	w.rt = routes;
-})(window);
-
+	
+	// presaved bookmark
+	if (location.hash != "") {
+		$('#menu-overlay').css({display: 'none'});
+	};
+	
+	// clean map function
+	function cleanMap () {
+		
+	}
+	// return to menu
+	$('.show-menu').on(touch, function(event) {
+		
+		// show menu
+		$('#menu-overlay').css({display: 'block'});
+		
+		// clear map
+		
+		
+	});
+});
