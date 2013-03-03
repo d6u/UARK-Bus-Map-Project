@@ -142,13 +142,13 @@ a.more .menu-title::after {
 
 /* back menu */
 #function {
-	position: absolute;
 	z-index: 5;
 	top: 0;
-	bottom: 0;
-	width: 100%;
 }
 
+body {
+	position: relative;
+}
 .show-menu {
 	display: inline-block;
 	position: absolute;
