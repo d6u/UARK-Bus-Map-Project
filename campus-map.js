@@ -1,28 +1,50 @@
 $(document).ready(function() {
-	var touch = (mobileBrowser) ? 'touchend' : 'click', // mapping touchend and click event
-		// MODERNIZR TRANSITION END EVENT
-		transEndEventNames = {
-		    'WebkitTransition' : 'webkitTransitionEnd',
-		    'MozTransition'    : 'transitionend',
-		    'OTransition'      : 'oTransitionEnd',
-		    'msTransition'     : 'MSTransitionEnd',
-		    'transition'       : 'transitionend'
-		},
-		transEnd = transEndEventNames[ Modernizr.prefixed('transition') ],
-		// GOOGLE MAP OPTIONS
-		mapOptions = {
-			center: new google.maps.LatLng(36.068000, -94.172500),
-			zoom: 14,
-			mapTypeId: google.maps.MapTypeId.ROADMAP,
-			streetViewControl: false,
-			mapTypeControl: false
-		},
-		// INIT GOOGLE MAP
-		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions),
-		// INIT ROUTES STORAGE
-		routes = {},
-		buses = [];
-		stops = {};
+	
+	// mapping touchend and click event based on whether mobile device
+	var touch = (mobileBrowser) ? 'touchend' : 'click';
+	
+	// init map
+	var map = new google.maps.Map(
+			document.getElementById("map_canvas"), 
+			{
+				center: new google.maps.LatLng(36.065475, -94.175148),
+				zoom: 14,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				streetViewControl: false,
+				mapTypeControl: false
+			});
+	
+	// load user location
+	// Try W3C Geolocation (Preferred)
+	if(navigator.geolocation) {
+		browserSupportFlag = true;
+		navigator.geolocation.getCurrentPosition(function(position) {
+			initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+			map.setCenter(initialLocation);
+		}, function() {
+			handleNoGeolocation(browserSupportFlag);
+		});
+	}
+	// Browser doesn't support Geolocation
+	else {
+		browserSupportFlag = false;
+		handleNoGeolocation(browserSupportFlag);
+	}
+	
+	function handleNoGeolocation(errorFlag) {
+		if (errorFlag == true) {
+			alert("Geolocation service failed.");
+			initialLocation = newyork;
+		} else {
+			alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+			initialLocation = siberia;
+		}
+		map.setCenter(initialLocation);
+	}
+	
+	
+	var routes = {}, buses = [], stops = {};
+	
 	// DECLEAR FUNCTIONS
 	function translate (color) { // TRANSLATE COLOR INTO ROUTE ID
 		var code = {n: null, rd: null};
@@ -138,7 +160,7 @@ $(document).ready(function() {
 					position: new google.maps.LatLng(lat, lng),
 					icon:{
 							url: 'stop_icon.svg',
-							// scaledSize: new google.maps.Size (12, 12)
+							scaledSize: new google.maps.Size (21, 21)
 						},
 					map: map,
 					title: data[i].name
