@@ -80,7 +80,7 @@ $(document).ready(function() {
 	}
 	
 	function drawPath(id) { // DRAW ROUTE PATH
-		if ( (routes[id.n] && routes[id.n].inService == 1) || (routes[id.rd] && routes[id.rd].inService == 1) ) {
+		// if ( (routes[id.n] && routes[id.n].inService == 1) || (routes[id.rd] && routes[id.rd].inService == 1) ) {
 			var current_id = routes[id.n].inService == 1 ? id.n : id.rd;
 			var shape = routes[current_id].shape,
 				points = shape.split(','),
@@ -100,10 +100,10 @@ $(document).ready(function() {
 			});
 			routes_polyline.setMap(map);
 			return current_id;
-		} else {
-			alert('No Service is available now.');
-			return null;
-		}
+		// } else {
+// 			alert('No Service is available now.');
+// 			return null;
+// 		}
 	}
 	function pinBus(bus_id) {
 		var url = 'http://campusdata.uark.edu/api/buses?callback=?&routeIds=' + bus_id;
@@ -138,7 +138,7 @@ $(document).ready(function() {
 					position: new google.maps.LatLng(lat, lng),
 					icon:{
 							url: 'stop_icon.svg',
-							scaledSize: new google.maps.Size (12, 12)
+							// scaledSize: new google.maps.Size (12, 12)
 						},
 					map: map,
 					title: data[i].name

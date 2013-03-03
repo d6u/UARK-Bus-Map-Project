@@ -1,17 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-
-<!-- The icon can be used freely in both personal and commercial projects with no attribution required, but always appreciated. 
-You may NOT sub-license, resell, rent, redistribute or otherwise transfer the icon without express written permission from iconmonstr.com -->
-
-
+<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-
-	 width="512px" height="512px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
-
-<circle id="circle-icon" cx="256" cy="256" r="206"/>
-
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" 
+	width="18px" height="18px">
+	<defs>
+		<filter xmlns="http://www.w3.org/2000/svg" id="dropshadow" height="130%">
+			<feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+			<feOffset dx="0" dy="0" result="offsetblur"/>
+			<feComponentTransfer>
+				<feFuncA type="linear" slope="0.9"/>
+			</feComponentTransfer>
+			<feMerge> 
+				<feMergeNode/>
+				<feMergeNode in="SourceGraphic"/> 
+			</feMerge>
+		</filter>
+	</defs>
+	
+	<circle cx="9" cy="9" r="7" stroke="white" stroke-width="0" fill="white" filter="url(#dropshadow)" />
+	<circle cx="9" cy="9" r="5" stroke="white" stroke-width="0" fill="#4FD1F9" />
 </svg>
-
