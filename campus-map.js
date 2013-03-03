@@ -114,7 +114,12 @@ $(document).ready(function() {
 				if (buses[i]) buses[i].setMap(null);
 				var new_bus = new google.maps.Marker({
 						position: new google.maps.LatLng(lat, lng),
-						map: map
+						map: map,
+						icon:{
+							url: 'bus_icon.svg',
+							scaledSize: new google.maps.Size (27.5, 27.5)
+						}
+
 					});
 				buses[i] = new_bus;
 			}
@@ -131,8 +136,12 @@ $(document).ready(function() {
 					lng = data[i].longitude;
 				var new_stop = new google.maps.Marker({
 					position: new google.maps.LatLng(lat, lng),
+					icon:{
+							url: 'stop_icon.svg',
+							scaledSize: new google.maps.Size (12, 12)
+						},
 					map: map,
-					title: "hello world"
+					title: data[i].name
 					});
 				
 			}
