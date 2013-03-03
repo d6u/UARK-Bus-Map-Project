@@ -193,11 +193,13 @@ $(document).ready(function() {
 	})
 	// ATTACH EVENT TO MENU BUTTON
 	$('#menu').on(touch, 'a', function (e) {
+		location.hash = $(this).attr('href');
 		var rt_color = $(this).attr('class').split(' ')[1],
 			rt_code = translate(rt_color);
 		$('#menu-overlay').css({display: 'none'});
 		showRoute(rt_code);
 	});
+	
 	
 	// presaved bookmark
 	if (location.hash != "") {
