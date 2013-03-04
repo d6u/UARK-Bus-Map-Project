@@ -3,234 +3,200 @@ $(document).ready(function() {
 	// mapping touchend and click event based on whether mobile device
 	var touch = (mobileBrowser) ? 'touchend' : 'click';
 	
-	// init map
-	var map = new google.maps.Map(
-			document.getElementById("map_canvas"), 
-			{
-				center: new google.maps.LatLng(36.065475, -94.175148),
-				zoom: 14,
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
-				streetViewControl: false,
-				mapTypeControl: false
-			});
+	// bus name => id hashmap
+	var routesID = {
+		"red": [1, 1],
+		"brown": 15,
+		"tan": [15, 15],
+		"yellow": 16,
+		"mapleHill": 18,
+		"purple": [19, 24],
+		"pomfret": 20,
+		"route56": 21,
+		"blue": [8, 22],
+		"green": [71, 23],
+		"gray": 88
+	};
 	
-	// load user location
-	// Try W3C Geolocation (Preferred)
+	// Initialize map options
+	var mapOptions = {
+		center: new google.maps.LatLng(36.065475, -94.175148),
+		zoom: 14,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		streetViewControl: false,
+		mapTypeControl: false
+	};
+	
+	var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+	var watchPosition = null; // position watcher
+	var userPosition = null; // user position marker
+	var route_polyline = null;
+	var route_stops = [];
+	var bus_positions = [];
+	
+	// detect user location
+	// Try W3C Geolocation
 	if(navigator.geolocation) {
-		browserSupportFlag = true;
-		navigator.geolocation.getCurrentPosition(function(position) {
-			initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-			map.setCenter(initialLocation);
-		}, function() {
-			handleNoGeolocation(browserSupportFlag);
+		navigator.geolocation.getCurrentPosition(
+			// success
+			function(position) {
+				map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+				userPosition = new google.maps.Marker({
+					position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+					icon:{
+						url: 'icons/user_icon.svg',
+						scaledSize: new google.maps.Size(40, 40),
+						// anchor: new google.maps.Point(10, 10)
+					},
+					map: map
+				});
+				watchPosition = navigator.geolocation.watchPosition(
+					// success
+					function(position) {
+						userPosition.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+					},
+					// fail
+					function() {
+						navigator.geolocation.clearWatch(watchPosition);
+					}
+				);
+			} // end of getCurrentPosition -> success function
+		);
+	}
+	
+	// with hashtag bookmark
+	if (location.hash != "") {
+		
+		// has bookmark
+		var hashString = location.hash.replace('#', '');
+		if (routesID[hashString] != undefined) {
+			loadRoute(routesID[hashString]);
+			$('#menu-overlay').css({display: 'none'});
+		}
+		else {
+			// bookmark invalid
+			location.hash = '';
+		};
+	};
+	
+	function loadRoute(idPair) {
+		
+		if (Array.isArray(idPair)) {
+			var normalID = idPair[0];
+			var reducedID = idPair[1];
+		}
+		else {
+			var normalID = idPair;
+			var reducedID = idPair;
+		};
+		
+		// load normal path
+		$.getJSON('http://campusdata.uark.edu/api/routes?callback=?', 
+			{routeid: normalID}, 
+			function(response) {
+				if (response.inService) {
+					showRoute(response);
+					showStops(normalID);
+					showBusPositions(normalID);
+				}
+				else {
+					// load reduced path
+					$.getJSON('http://campusdata.uark.edu/api/routes?callback=?',
+						{routeid: reducedID},
+						function(response) {
+							showRoute(response);
+							showStops(reducedID);
+							
+							if (response.inService) {
+								showBusPositions(normalID);
+							};
+						});
+				};
 		});
 	}
-	// Browser doesn't support Geolocation
-	else {
-		browserSupportFlag = false;
-		handleNoGeolocation(browserSupportFlag);
-	}
 	
-	function handleNoGeolocation(errorFlag) {
-		if (errorFlag == true) {
-			alert("Geolocation service failed.");
-			initialLocation = newyork;
-		} else {
-			alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
-			initialLocation = siberia;
+	function showRoute(route) { // DISPLAY ROUTE PATH & BUS POSITION
+		
+		var points = route.shape.split(',');
+		var routes_path = [];
+		for (var i = 0; i < points.length; i++) {
+			var pair = {};
+			pair.a = Number(points[i].split(' ')[0]);
+			pair.b = Number(points[i].split(' ')[1]);
+			var path = new google.maps.LatLng(pair.a, pair.b);
+			routes_path[i] = path;
 		}
-		map.setCenter(initialLocation);
-	}
-	
-	
-	var routes = {}, buses = [], stops = {};
-	
-	// DECLEAR FUNCTIONS
-	function translate (color) { // TRANSLATE COLOR INTO ROUTE ID
-		var code = {n: null, rd: null};
-		switch (color) {
-			case 'red':
-				code.n = 1;
-				code.rd = 1;
-				break;
-			case 'brown':
-				code.n = 12;
-				break;
-			case 'tan':
-				code.n = 15;
-				code.rd = 15;
-				break;
-			case 'yellow':
-				code.n = 16;
-				break;
-			case 'mapleHill':
-				code.n = 18;
-				break;
-			case 'purple':
-				code.n = 19;
-				code.rd = 24;
-				break;
-			case 'pomfret':
-				code.n = 20;
-				break;
-			case 'route56':
-				code.n = 21;
-				break;
-			case 'blue':
-				code.n = 8;
-				code.rd = 22;
-				break;
-			case 'green':
-				code.n = 71;
-				code.rd = 23;
-				break;
-			case 'gray':
-				code.n = 88;
-				break;
-		}
-		return code;
-	} // TRANSLATE COLOR INTO ID
-	function showRoute(id) { // DISPLAY ROUTE PATH & BUS POSITION
-		var bus_id = drawPath(id);
-		if (bus_id != null) {
-			pinBus(bus_id);
-			setInterval(function () {
-				pinBus(bus_id);
-			}, 4000);
-			pinStops(bus_id);
-		}
-	}
-	
-	function drawPath(id) { // DRAW ROUTE PATH
-		// if ( (routes[id.n] && routes[id.n].inService == 1) || (routes[id.rd] && routes[id.rd].inService == 1) ) {
-			var current_id = routes[id.n].inService == 1 ? id.n : id.rd;
-			var shape = routes[current_id].shape,
-				points = shape.split(','),
-				routes_path = [];
-			for (var i = 0; i < points.length; i++) {
-				var pair = {};
-				pair.a = Number(points[i].split(' ')[0]);
-				pair.b = Number(points[i].split(' ')[1]);
-				var path = new google.maps.LatLng(pair.a, pair.b);
-				routes_path[i] = path;
-			}
-			var routes_polyline = new google.maps.Polyline({
-				path: routes_path,
-				strokeColor: routes[current_id].color,
-				strokeOpacity: 0.8,
-				strokeWeight: 4
-			});
-			routes_polyline.setMap(map);
-			return current_id;
-		// } else {
-// 			alert('No Service is available now.');
-// 			return null;
-// 		}
-	}
-	function pinBus(bus_id) {
-		var url = 'http://campusdata.uark.edu/api/buses?callback=?&routeIds=' + bus_id;
-		$.getJSON(url, function (data) {
-			for (var i = 0; i < data.length; i++) {
-				var lat = data[i].latitude,
-					lng = data[i].longitude;
-				if (buses[i]) buses[i].setMap(null);
-				var new_bus = new google.maps.Marker({
-						position: new google.maps.LatLng(lat, lng),
-						map: map,
-						icon:{
-							url: 'bus_icon.svg',
-							scaledSize: new google.maps.Size (27.5, 27.5)
-						}
-
-					});
-				buses[i] = new_bus;
-			}
+		route_polyline = new google.maps.Polyline({
+			path: routes_path,
+			strokeColor: route.color,
+			strokeOpacity: 0.8,
+			strokeWeight: 4
 		});
+		route_polyline.setMap(map);
 	}
-	function pinStops(bus_id){
-		var url = 'http://campusdata.uark.edu/api/stops?callback=?&routeIds=' + bus_id;
-		//var url = 'http://campusdata.uark.edu/api/stops';
-		$.getJSON(url, function (data) {
-		//	console.log(data);
-			for (var i = 0; i < data.length; i++)
+	
+	function showStops(routeID) {
+		
+		$.getJSON('http://campusdata.uark.edu/api/stops?callback=?', {routeids: routeID}, function (response) {
+			for (var i = 0; i < response.length; i++)
 			{
-				var lat = data[i].latitude,
-					lng = data[i].longitude;
+				var lat = response[i].latitude, lng = response[i].longitude;
 				var new_stop = new google.maps.Marker({
 					position: new google.maps.LatLng(lat, lng),
 					icon:{
-							url: 'stop_icon.svg',
-							scaledSize: new google.maps.Size (21, 21)
-						},
-					map: map,
-					title: data[i].name
-					});
-				
+						url: 'icons/stop_icon.svg',
+						scaledSize: new google.maps.Size(21, 21),
+						anchor: new google.maps.Point(10, 10)
+					},
+					map: map
+				});
+				route_stops[i] = new_stop;
 			}
 		});
-/*		var myLatlng = new google.maps.LatLng(36.068000, -94.172500);
-		var makrer = new google.maps.Marker({
-			position: myLatlng,
-			map: map,
-			title: "hello world"
-		});
-*/
 	}
-	// LOAD ROUTES INFO
-	$.ajax({
-		url: 'http://campusdata.uark.edu/api/routes',
-		data: {},
-		dataType: 'jsonp',
-		jsonp: 'callback',
-		jsonpCallback: 'Routes',
-		cache: 'true',
-		success: function (data) {
-			$.each(data, function (key, val) {
-				if (val.status == 1) {
-					routes[val.id] = val; // 19:PURPLE 24:PURPLE REDUCED
-				}
-			});
-			if (location.hash != "") {
-				var a = $('#menu a[href='+location.hash+']');
-				$(a[0]).trigger(touch);
+	
+	function showBusPositions(routeID) {
+		
+		$.getJSON('http://campusdata.uark.edu/api/buses?callback=?', {routeids: routeID}, function (response) {
+			if (bus_positions.length > 0) {
+				for (var i=0; i < bus_positions.length; i++) {
+					bus_positions[i].setMap(null);
+				};
 			};
-		},
-		error: function () {
-			alert('ERROR');
-		}
-	});
-	$.ajax({
-		url: 'http://campusdata.uark.edu/api/stops',
-		data: {},
-		dataType : 'jsonp',
-		jsonp:'callback',
-		jsonpCallback: 'stops',
-		cache: 'true',
-		success: function (response){
-			$.each(response, function(key, val){
-				stops[val.id] = val;
-			});
-		}
-
-	})
-	// ATTACH EVENT TO MENU BUTTON
-	$('#menu').on(touch, 'a', function (e) {
-		location.hash = $(this).attr('href');
-		var rt_color = $(this).attr('class').split(' ')[1],
-			rt_code = translate(rt_color);
-		$('#menu-overlay').css({display: 'none'});
-		showRoute(rt_code);
-	});
-	
-	
-	// presaved bookmark
-	if (location.hash != "") {
-		$('#menu-overlay').css({display: 'none'});
-	};
+			for (var i = 0; i < response.length; i++) {
+				var lat = response[i].latitude, lng = response[i].longitude;
+				var new_bus = new google.maps.Marker({
+					position: new google.maps.LatLng(lat, lng),
+					map: map,
+					// icon:{
+// 						url: 'bus_icon.svg',
+// 						scaledSize: new google.maps.Size (27.5, 27.5)
+// 					}
+				});
+				bus_positions[i] = new_bus;
+			}
+		});
+	}
 	
 	// clean map function
-	function cleanMap () {
+	function cleanMap() {
 		
+		// clean route path
+		route_polyline.setMap(null);
+		
+		// clean stops
+		if (route_stops.length > 0) {
+			for (var i=0; i < route_stops.length; i++) {
+				route_stops[i].setMap(null);
+			};
+		};
+		
+		// clean buses
+		if (bus_positions.length > 0) {
+			for (var i=0; i < bus_positions.length; i++) {
+				bus_positions[i].setMap(null);
+			};
+		};
 	}
 	// return to menu
 	$('.show-menu').on(touch, function(event) {
@@ -239,7 +205,15 @@ $(document).ready(function() {
 		$('#menu-overlay').css({display: 'block'});
 		
 		// clear map
-		
-		
+		cleanMap();
 	});
-});
+	
+	// ATTACH EVENT TO MENU BUTTON
+	$('#menu').on(touch, 'a', function (e) {
+		
+		location.hash = $(this).attr('href');
+		var rt_color = $(this).attr('class').split(' ')[1];
+		$('#menu-overlay').css({display: 'none'});
+		loadRoute(routesID[rt_color]);
+	});
+}); // end of document ready
