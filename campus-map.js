@@ -28,11 +28,14 @@ $(document).ready(function() {
 	};
 	
 	var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-	var watchPosition = null; // position watcher
+	
+	// holding variables
+	var watchPosition = null; // GPS watcher
 	var userPosition = null; // user position marker
-	var route_polyline = null;
-	var route_stops = [];
-	var bus_positions = [];
+	var route_polyline = null; // route path
+	var route_stops = []; // stop markers
+	var bus_positions = []; // position markers
+	var updateBusPositionTimer;
 	
 	// detect user location
 	// Try W3C Geolocation
@@ -61,26 +64,28 @@ $(document).ready(function() {
 					}
 				);
 			} // end of getCurrentPosition -> success function
-		);
+		); // end of getCurrentPosition
 	}
 	
-	// with hashtag bookmark
-	if (location.hash != "") {
-		
-		// has bookmark
+	// Bookmark functions
+	if (location.hash != "")
+	// has bookmark
+	{
 		var hashString = location.hash.replace('#', '');
+		// hashtag is valid
 		if (routesID[hashString] != undefined) {
-			loadRoute(routesID[hashString]);
+			loadRoute( routesID[hashString] );
 			$('#menu-overlay').css({display: 'none'});
 		}
+		// hashtag is invalid
 		else {
-			// bookmark invalid
 			location.hash = '';
 		};
 	};
 	
 	function loadRoute(idPair) {
 		
+		// route with reduced service or not
 		if (Array.isArray(idPair)) {
 			var normalID = idPair[0];
 			var reducedID = idPair[1];
@@ -98,6 +103,9 @@ $(document).ready(function() {
 					showRoute(response);
 					showStops(normalID);
 					showBusPositions(normalID);
+					updateBusPositionTimer = setInterval(function(){
+						showBusPositions(normalID);
+					},4000);
 				}
 				else {
 					// load reduced path
@@ -108,7 +116,10 @@ $(document).ready(function() {
 							showStops(reducedID);
 							
 							if (response.inService) {
-								showBusPositions(normalID);
+								showBusPositions(reducedID);
+								updateBusPositionTimer = setInterval(function(){
+									showBusPositions(reducedID);
+								},4000);
 							};
 						});
 				};
@@ -197,6 +208,9 @@ $(document).ready(function() {
 				bus_positions[i].setMap(null);
 			};
 		};
+		
+		// clean timer
+		clearInterval(updateBusPositionTimer);
 	}
 	// return to menu
 	$('.show-menu').on(touch, function(event) {
