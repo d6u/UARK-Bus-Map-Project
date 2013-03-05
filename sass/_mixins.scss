@@ -1,0 +1,9 @@
+// 
+// @TODO: Add docs to top-menu-button-color!
+//
+@mixin top-menu-button-color($name, $color) {
+	&[href="##{$name}"] {
+		.color-block { background-color: $color; }
+		.text-block { color: $color; }
+	}
+}

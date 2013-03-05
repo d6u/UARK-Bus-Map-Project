@@ -1,7 +1,3 @@
-/* Welcome to Compass.
- * In this file you should write your main styles. (or centralize your imports)
- * Import this file using the following HTML or equivalent:
- * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 /* normalize.css v2.1.0 | MIT License | git.io/normalize */
 /* normalize.scss v2.1.0 | MIT/GPLv2 License | bit.ly/normalize-with-compass */
 /* ==========================================================================
@@ -570,26 +566,187 @@ table {
   border-spacing: 0;
 }
 
-/* line 10, ../sass/screen.scss */
-.route-selector a {
-  display: block;
-  float: left;
-  width: 61px;
-  border-left: 1px solid #d6d6d6;
-  border-bottom: 1px solid #d6d6d6;
+/* line 7, ../sass/screen.scss */
+.container {
+  min-height: 416px;
+  position: relative;
 }
-/* line 16, ../sass/screen.scss */
-.route-selector a span {
-  display: block;
-}
-/* line 17, ../sass/screen.scss */
-.route-selector a .color-block {
-  width: 41px;
-  height: 41px;
-  border-radius: 20px;
+
+/* line 13, ../sass/screen.scss */
+.top-menu {
+  overflow: hidden;
+  *zoom: 1;
+  position: absolute;
+  z-index: 20;
+  width: 308px;
+  border: 1px solid #999999;
+  top: 5px;
+  right: 5px;
+  background-color: white;
+  -webkit-box-shadow: 0 0 10px 0 #999999;
+  -moz-box-shadow: 0 0 10px 0 #999999;
+  box-shadow: 0 0 10px 0 #999999;
 }
 
 /* line 25, ../sass/screen.scss */
+.route-selector a {
+  display: block;
+  float: left;
+  width: 76px;
+  border-right: 1px solid #d6d6d6;
+  border-bottom: 1px solid #d6d6d6;
+  padding-top: 10px;
+  text-decoration: none;
+}
+/* line 33, ../sass/screen.scss */
+.route-selector a:nth-of-type(4n) {
+  border-right: none;
+  width: 77px;
+}
+/* line 37, ../sass/screen.scss */
+.route-selector a:nth-of-type(n+9) {
+  border-bottom: none;
+}
+/* line 40, ../sass/screen.scss */
+.route-selector a:hover {
+  background-color: #f2f2f2;
+}
+/* line 41, ../sass/screen.scss */
+.route-selector a span {
+  display: block;
+}
+/* line 42, ../sass/screen.scss */
+.route-selector a .color-block {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  margin: 0 auto 5px;
+}
+/* line 48, ../sass/screen.scss */
+.route-selector a .text-block {
+  text-align: center;
+  font-size: 14px;
+}
+
+/* line 6, ../sass/_mixins.scss */
 a[href="#blue"] .color-block {
   background-color: #00a8de;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#blue"] .text-block {
+  color: #00a8de;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#brown"] .color-block {
+  background-color: #ce6b29;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#brown"] .text-block {
+  color: #ce6b29;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#gray"] .color-block {
+  background-color: #d6d6d6;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#gray"] .text-block {
+  color: #d6d6d6;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#green"] .color-block {
+  background-color: #00a054;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#green"] .text-block {
+  color: #00a054;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#maple-hill"] .color-block {
+  background-color: black;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#maple-hill"] .text-block {
+  color: black;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#pomfret"] .color-block {
+  background-color: black;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#pomfret"] .text-block {
+  color: black;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#purple"] .color-block {
+  background-color: #9c298c;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#purple"] .text-block {
+  color: #9c298c;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#red"] .color-block {
+  background-color: #ea2b3b;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#red"] .text-block {
+  color: #ea2b3b;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#route56"] .color-block {
+  background-color: black;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#route56"] .text-block {
+  color: black;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#tan"] .color-block {
+  background-color: #f29557;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#tan"] .text-block {
+  color: #f29557;
+}
+/* line 6, ../sass/_mixins.scss */
+a[href="#yellow"] .color-block {
+  background-color: #fce92b;
+}
+/* line 7, ../sass/_mixins.scss */
+a[href="#yellow"] .text-block {
+  color: #fce92b;
+}
+
+/* line 71, ../sass/screen.scss */
+.control-menu {
+  position: absolute;
+  z-index: 10;
+}
+
+/* line 75, ../sass/screen.scss */
+a[href="#show-menu"] {
+  top: 5px;
+  right: 269px;
+  display: block;
+  width: 38px;
+  height: 38px;
+  padding: 3px;
+  background-color: white;
+  border: 1px solid #999999;
+  -webkit-box-shadow: 0 0 10px 0 #999999;
+  -moz-box-shadow: 0 0 10px 0 #999999;
+  box-shadow: 0 0 10px 0 #999999;
+}
+/* line 85, ../sass/screen.scss */
+a[href="#show-menu"] img {
+  width: 38px;
+  height: 38px;
+}
+
+/* line 92, ../sass/screen.scss */
+.map-canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }

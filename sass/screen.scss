@@ -1,28 +1,97 @@
-/* Welcome to Compass.
- * In this file you should write your main styles. (or centralize your imports)
- * Import this file using the following HTML or equivalent:
- * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
-
+@import "compass";
 @import "normalize";
 @import "variables";
+@import "mixins";
 
+// Container
+.container {
+	min-height: 416px;
+	position: relative;
+}
+
+// Top menu
+.top-menu {
+	@include clearfix();
+	position: absolute;
+	z-index: 20;
+	width: 308px;
+	border: 1px solid $border-gray;
+	top: 5px;
+	right: 5px;
+	background-color: white;
+	@include single-box-shadow($border-gray, 0, 0, 10px, 0, false);
+}
 .route-selector {
 	a {
 		display: block;
 		float: left;
-		width: 61px;
-		border-left: 1px solid $gray;
+		width: 76px;
+		border-right: 1px solid $gray;
 		border-bottom: 1px solid $gray;
+		padding-top: 10px;
+		text-decoration: none;
+		&:nth-of-type(4n) {
+			border-right: none;
+			width: 77px;
+		}
+		&:nth-of-type(n+9) {
+			border-bottom: none;
+		}
+		&:hover { background-color: $light-gray; }
 		span { display: block; }
 		.color-block {
-			width: 41px;
-			height: 41px;
+			width: 40px;
+			height: 40px;
 			border-radius: 20px;
+			margin: 0 auto 5px;
+		}
+		.text-block {
+			text-align: center;
+			font-size: 14px;
 		}
 	}
 }
-a[href="#blue"] {
-	.color-block {
-		background-color: $blue;
+a {
+	@include top-menu-button-color("blue", $blue);
+	@include top-menu-button-color("brown", $brown);
+	@include top-menu-button-color("gray", $gray);
+	@include top-menu-button-color("green", $green);
+	
+	@include top-menu-button-color("maple-hill", $dark);
+	@include top-menu-button-color("pomfret", $dark);
+	@include top-menu-button-color("purple", $purple);
+	@include top-menu-button-color("red", $red);
+	
+	@include top-menu-button-color("route56", $dark);
+	@include top-menu-button-color("tan", $tan);
+	@include top-menu-button-color("yellow", $yellow);
+}
+
+// Control
+.control-menu {
+	position: absolute;
+	z-index: 10;
+}
+a[href="#show-menu"] {
+	top: 5px;
+	right: 269px;
+	display: block;
+	width: 38px;
+	height: 38px;
+	padding: 3px;
+	background-color: white;
+	border: 1px solid $border-gray;
+	@include single-box-shadow($border-gray, 0, 0, 10px, 0, false);
+	img {
+		width: 38px;
+		height: 38px;
 	}
+}
+
+// Map
+.map-canvas {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
 }

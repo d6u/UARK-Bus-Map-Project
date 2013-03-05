@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	// mapping touchend and click event based on whether mobile device
-	var touch = (mobileBrowser) ? 'touchend' : 'click';
+	var touch = ($.browser.mobile) ? 'touchend' : 'click';
 	
 	// bus name => id hashmap
 	var routesID = {
@@ -47,7 +47,7 @@ $(document).ready(function() {
 				userPosition = new google.maps.Marker({
 					position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
 					icon:{
-						url: 'icons/user_icon.svg',
+						url: 'images/user_icon.svg',
 						scaledSize: new google.maps.Size(40, 40),
 						// anchor: new google.maps.Point(10, 10)
 					},
@@ -75,7 +75,7 @@ $(document).ready(function() {
 		// hashtag is valid
 		if (routesID[hashString] != undefined) {
 			loadRoute( routesID[hashString] );
-			$('#menu-overlay').css({display: 'none'});
+			$('.top-menu').css({display: 'none'});
 		}
 		// hashtag is invalid
 		else {
@@ -155,7 +155,7 @@ $(document).ready(function() {
 				var new_stop = new google.maps.Marker({
 					position: new google.maps.LatLng(lat, lng),
 					icon:{
-						url: 'icons/stop_icon.svg',
+						url: 'images/stop_icon.svg',
 						scaledSize: new google.maps.Size(21, 21),
 						anchor: new google.maps.Point(10, 10)
 					},
@@ -212,22 +212,37 @@ $(document).ready(function() {
 		// clean timer
 		clearInterval(updateBusPositionTimer);
 	}
-	// return to menu
-	$('.show-menu').on(touch, function(event) {
-		
-		// show menu
-		$('#menu-overlay').css({display: 'block'});
-		
-		// clear map
-		cleanMap();
-	});
 	
-	// ATTACH EVENT TO MENU BUTTON
-	$('#menu').on(touch, 'a', function (e) {
+	// Top menu event
+	$('.route-selector').on(touch, 'a', function (e) {
 		
 		location.hash = $(this).attr('href');
-		var rt_color = $(this).attr('class').split(' ')[1];
-		$('#menu-overlay').css({display: 'none'});
-		loadRoute(routesID[rt_color]);
+		var rt_color = $(this).attr('href').replace('#', '');
+		
+		setTimeout(function() {
+			// To fix interface interaction bug
+			
+			loadRoute(routesID[rt_color]);
+			
+			$('.top-menu').css({display: 'none'});
+			$('.control-menu').css({display: 'block'});
+		}, 1);
 	});
+	
+	// return to menu
+	$('a[href="#show-menu"]').on(touch, function(event) {
+		
+		setTimeout(function() {
+			// To fix interface interaction bug
+			
+			// show menu
+			$('.top-menu').css({display: 'block'});
+			$('.control-menu').css({display: 'none'});
+			
+			// clear map
+			cleanMap();
+		}, 1);
+	});
+	
+	
 }); // end of document ready
