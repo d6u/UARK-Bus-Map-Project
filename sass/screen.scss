@@ -1,0 +1,28 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "normalize";
+@import "variables";
+
+.route-selector {
+	a {
+		display: block;
+		float: left;
+		width: 61px;
+		border-left: 1px solid $gray;
+		border-bottom: 1px solid $gray;
+		span { display: block; }
+		.color-block {
+			width: 41px;
+			height: 41px;
+			border-radius: 20px;
+		}
+	}
+}
+a[href="#blue"] {
+	.color-block {
+		background-color: $blue;
+	}
+}
