@@ -166,38 +166,49 @@ $(document).ready(function() {
 			{routeids: routeID},
 			function (response) {
 				
-				// clean stops
-				if (route_stops.length > 0) {
-					for (var i=0; i < route_stops.length; i++) {
-						route_stops[i].setMap(null);
-					};
-				};
-				
 				// Hold stops DOM node
 				var stopInfoDOMArray = [];
 				
+				// Not already had stops pinned on map
+				if ( route_stops.length <= 0 )
+				{
+					for (var i = 0; i < response.length; i++)
+					{
+						// hold stop object
+						var stop = response[i];
+					
+						// pin stop marker
+						var lat = stop.latitude, lng = stop.longitude;
+						var new_stop = new google.maps.Marker({
+							position: new google.maps.LatLng(lat, lng),
+							icon:{
+								url: 'images/stop_icon.svg',
+								scaledSize: new google.maps.Size(21, 21),
+								anchor: new google.maps.Point(10, 10)
+							},
+							map: map
+						});
+					
+						// save stop marker
+						route_stops[i] = new_stop;
+					} // end of for loop
+				};
+				
+				
 				for (var i = 0; i < response.length; i++)
 				{
-					// hold stop object
 					var stop = response[i];
 					
-					// pin stop marker
-					var lat = stop.latitude, lng = stop.longitude;
-					var new_stop = new google.maps.Marker({
-						position: new google.maps.LatLng(lat, lng),
-						icon:{
-							url: 'images/stop_icon.svg',
-							scaledSize: new google.maps.Size(21, 21),
-							anchor: new google.maps.Point(10, 10)
-						},
-						map: map
-					});
+					// Fill map control time table if stopID is stored
+					if ( localStorage.stopID && stop.id == localStorage.stopID )
+					{
+						$('.schedule-info').html('Arriving at ' + stop.name);
+						$('.schedule-detail').html('in ' + stop.nextArrival);
+					};
 					
-					// save stop marker
-					route_stops[i] = new_stop;
 					
 					// fill schedule table
-					var a = $('<a/>').attr({href: '#'}).append(
+					var a = $('<a/>').attr({href: '#' + stop.id}).append(
 						$('<div/>').addClass('stop-name').html(stop.name),
 						$('<div/>').addClass('arriving-time').html(stop.nextArrival)
 					);
@@ -248,6 +259,7 @@ $(document).ready(function() {
 		
 		// clean route path
 		route_polyline.setMap(null);
+		route_polyline = null;
 		
 		// clean stops
 		if (route_stops.length > 0) {
@@ -255,6 +267,7 @@ $(document).ready(function() {
 				route_stops[i].setMap(null);
 			};
 		};
+		route_stops = [];
 		
 		// clean buses
 		if (bus_positions.length > 0) {
@@ -262,10 +275,21 @@ $(document).ready(function() {
 				bus_positions[i].setMap(null);
 			};
 		};
+		bus_positions = [];
 		
 		// clean timer
 		clearInterval(updateBusPositionTimer);
+		
+		// Restore map control time table
+		$('.schedule-info').html('Select stop');
+		$('.schedule-detail').html('show arriving time');
 	}
+	
+	
+	// Prevent adding hashtag on default
+	$('a').on('click', function(event) {
+		event.preventDefault();
+	});
 	
 	// Top menu event
 	$('.route-selector').on(touch, 'a', function (e) {
@@ -274,12 +298,11 @@ $(document).ready(function() {
 		var rt_color = $(this).attr('href').replace('#', '');
 		
 		setTimeout(function() {
-			// To fix interface interaction bug
+			// Fix interface interaction bug
 			
 			loadRoute(routesID[rt_color]);
 			
 			$('.top-menu').css({display: 'none'});
-			$('.control-menu').css({display: 'block'});
 		}, 1);
 	});
 	
@@ -287,11 +310,10 @@ $(document).ready(function() {
 	$('a[href="#show-menu"]').on(touch, function(event) {
 		
 		setTimeout(function() {
-			// To fix interface interaction bug
+			// Fix interface interaction bug
 			
 			// show menu
 			$('.top-menu').css({display: 'block'});
-			$('.control-menu').css({display: 'none'});
 			
 			// clear map
 			cleanMap();
@@ -301,14 +323,26 @@ $(document).ready(function() {
 	// Show stops arriving schedule
 	$('a[href="#route-schedule"]').on(touch, function(event) {
 		
-		event.preventDefault();
 		$('.route-schedule').css({display: "block"});
 	});
+	
+	// Select stops in arriving schedule
+	$('.stop-container').on('click', 'a', function(event) {
+		
+		// Close stops arriving schedule
+		$('a[href="#close-route-schedule"]').trigger(touch);
+		
+		// Remember a stop choice in localstorage memory
+		if(typeof(Storage)!=="undefined")
+		{
+			// Yes! localStorage and sessionStorage support!
+			localStorage.stopID = $(this).attr('href').replace('#', '');
+		}
+	})
 	
 	// Close stops arriving schedule
 	$('a[href="#close-route-schedule"]').on(touch, function(event) {
 		
-		event.preventDefault();
 		$('.route-schedule').css({display: "none"});
 	})
 	
