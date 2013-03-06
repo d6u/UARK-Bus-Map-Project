@@ -10,9 +10,9 @@
 	<link href="/stylesheets/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
 	<![endif]-->
 	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="javascripts/detect-mobile-browser.js"></script>
-	<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBporL0pQi3TR9oc6qXiYRiG5EG58w_7uY&sensor=true"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBporL0pQi3TR9oc6qXiYRiG5EG58w_7uY&sensor=true"></script>
 	<script src="javascripts/main.js?version=3.0"></script>
 </head>
 <body>
@@ -36,8 +36,19 @@
 		</div>
 		
 		<a class="control-menu" href="#show-menu"><img src="images/show-menu-icon.svg" alt="" /></a>
-		<div class="control-menu route-schedule"></div>
+		<a class="control-menu" href="#route-schedule">
+			<p class="schedule-info">Select stop </p>
+			<p class="schedule-detail">show arriving time</p>
+			<div class="current-color"></div>
+		</a>
 		<a class="control-menu" href="#track-buses"></a>
+		
+		<div class="route-schedule">
+			<div>
+				<a href="#close-route-schedule">Return</a>
+			</div>
+			<div class="stop-container"></div>
+		</div>
 		
 		<div id="map_canvas" class="map-canvas"></div>
 	</div>

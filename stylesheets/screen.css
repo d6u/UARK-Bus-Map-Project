@@ -723,11 +723,10 @@ a[href="#yellow"] .text-block {
   z-index: 10;
 }
 
-/* line 75, ../sass/screen.scss */
+/* line 80, ../sass/screen.scss */
 a[href="#show-menu"] {
   top: 5px;
   right: 269px;
-  display: block;
   width: 38px;
   height: 38px;
   padding: 3px;
@@ -737,13 +736,109 @@ a[href="#show-menu"] {
   -moz-box-shadow: 0 0 10px 0 #999999;
   box-shadow: 0 0 10px 0 #999999;
 }
-/* line 85, ../sass/screen.scss */
+/* line 87, ../sass/screen.scss */
 a[href="#show-menu"] img {
   width: 38px;
   height: 38px;
 }
 
 /* line 92, ../sass/screen.scss */
+a[href="#route-schedule"] {
+  top: 5px;
+  right: 5px;
+  width: 257px;
+  height: 44px;
+  background-color: white;
+  border: 1px solid #999999;
+  -webkit-box-shadow: 0 0 10px 0 #999999;
+  -moz-box-shadow: 0 0 10px 0 #999999;
+  box-shadow: 0 0 10px 0 #999999;
+  color: black;
+  text-decoration: none;
+}
+/* line 100, ../sass/screen.scss */
+a[href="#route-schedule"]:hover {
+  background-color: #f2f2f2;
+}
+
+/* line 105, ../sass/screen.scss */
+.control-menu p {
+  margin: 0;
+  margin-left: 5px;
+}
+
+/* line 110, ../sass/screen.scss */
+.schedule-info {
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: bold;
+  margin-top: 6px !important;
+}
+
+/* line 119, ../sass/screen.scss */
+.current-color {
+  background-color: #00a8de;
+  height: 44px;
+  width: 44px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* line 129, ../sass/screen.scss */
+.route-schedule {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 15;
+  width: 280px;
+  min-height: 376px;
+  background-color: white;
+  display: none;
+  padding: 20px;
+}
+
+/* line 140, ../sass/screen.scss */
+a[href="#close-route-schedule"] {
+  color: white;
+  background-color: #00a8de;
+  display: block;
+  height: 35px;
+  width: 200px;
+  margin: 0 auto 10px;
+  text-align: center;
+  line-height: 35px;
+  text-decoration: none;
+}
+
+/* line 152, ../sass/screen.scss */
+.stop-container a {
+  overflow: hidden;
+  *zoom: 1;
+  display: block;
+  border-bottom: 1px solid #999999;
+  height: 44px;
+  color: black;
+  line-height: 44px;
+}
+/* line 159, ../sass/screen.scss */
+.stop-container a:last-child {
+  border-bottom: none;
+}
+/* line 162, ../sass/screen.scss */
+.stop-container a:hover {
+  background-color: #f2f2f2;
+}
+/* line 166, ../sass/screen.scss */
+.stop-container .stop-name {
+  float: left;
+}
+/* line 169, ../sass/screen.scss */
+.stop-container .arriving-time {
+  float: right;
+}
+
+/* line 175, ../sass/screen.scss */
 .map-canvas {
   position: absolute;
   top: 0;

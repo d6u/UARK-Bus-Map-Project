@@ -11,7 +11,7 @@
 
 // Top menu
 .top-menu {
-	@include clearfix();
+	@include clearfix;
 	position: absolute;
 	z-index: 20;
 	width: 308px;
@@ -72,19 +72,102 @@ a {
 	position: absolute;
 	z-index: 10;
 }
-a[href="#show-menu"] {
-	top: 5px;
-	right: 269px;
-	display: block;
-	width: 38px;
-	height: 38px;
-	padding: 3px;
+@mixin control-menu-style {
 	background-color: white;
 	border: 1px solid $border-gray;
 	@include single-box-shadow($border-gray, 0, 0, 10px, 0, false);
+}
+a[href="#show-menu"] {
+	top: 5px;
+	right: 269px;
+	width: 38px;
+	height: 38px;
+	padding: 3px;
+	@include control-menu-style;
 	img {
 		width: 38px;
 		height: 38px;
+	}
+}
+a[href="#route-schedule"] {
+	top: 5px;
+	right: 5px;
+	width: 257px;
+	height: 44px;
+	@include control-menu-style;
+	color: $dark;
+	text-decoration: none;
+	&:hover {
+		background-color: $light-gray;
+	}
+}
+.control-menu {
+	p {
+		margin: 0;
+		margin-left: 5px;
+	}
+}
+.schedule-info {
+	font-size: 14px;
+	line-height: 14px;
+	font-weight: bold;
+	margin-top: 6px !important;
+}
+.schedule-detail {
+	
+}
+.current-color {
+	background-color: $blue;
+	height: 44px;
+	width: 44px;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+// Schedule table
+.route-schedule {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 15;
+	width: 280px;
+	min-height: 376px;
+	background-color: white;
+	display: none;
+	padding: 20px;
+}
+a[href="#close-route-schedule"] {
+	color: white;
+	background-color: $blue;
+	display: block;
+	height: 35px;
+	width: 200px;
+	margin: 0 auto 10px;
+	text-align: center;
+	line-height: 35px;
+	text-decoration: none;
+}
+.stop-container {
+	a {
+		@include clearfix;
+		display: block;
+		border-bottom: 1px solid $border-gray;
+		height: 44px;
+		color: $dark;
+		line-height: 44px;
+		&:last-child {
+			border-bottom: none;
+		}
+		&:hover {
+			background-color: $light-gray;
+		}
+	}
+	.stop-name {
+		float: left;
+	}
+	.arriving-time {
+		float: right;
 	}
 }
 
