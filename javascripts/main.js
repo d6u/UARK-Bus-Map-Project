@@ -304,6 +304,7 @@ $(document).ready(function() {
 	// Prevent adding hashtag on default
 	$('a').on('click', function(event) {
 		event.preventDefault();
+        mixpanel.track("Clicked a Link");
 	});
 	
 	// Top menu event
