@@ -1,25 +1,29 @@
+var map;
 $(document).ready(function() {
 	
 	// mapping touchend and click event based on whether mobile device
 	var touch = ($.browser.mobile) ? 'touchend' : 'click';
 	
 	// bus name => id hashmap
-	var routesID = {
-		"red": [1, 1],
-		"brown": 15,
-		"tan": [15, 15],
-		"yellow": 16,
-		"maple-hill": 18,
-		"purple": [19, 24],
-		"pomfret": 20,
-		"route56": 21,
-		"blue": [8, 22],
-		"green": [71, 23],
-		"gray": 88
+	var stopIconPrefix = "stop_icon_";
+    var stopIconSurfix = ".svg";
+	var routesData = {
+		"blue":       {id: 8,  reduced: 22, stopIcon: stopIconPrefix + "blue" + stopIconSurfix},
+        "brown":      {id: 12,              stopIcon: stopIconPrefix + "brown" + stopIconSurfix},
+        "gray":       {id: 88,              stopIcon: stopIconPrefix + "gray" + stopIconSurfix},
+        "green":      {id: 71, reduced: 23, stopIcon: stopIconPrefix + "green" + stopIconSurfix},
+        "maple-hill": {id: 18,              stopIcon: stopIconPrefix + "dark" + stopIconSurfix},
+        "pomfret":    {id: 20,              stopIcon: stopIconPrefix + "dark" + stopIconSurfix},
+        "purple":     {id: 19, reduced: 24, stopIcon: stopIconPrefix + "purple" + stopIconSurfix},
+        "red":        {id: 1,  reduced: 1,  stopIcon: stopIconPrefix + "red" + stopIconSurfix},
+        "route56":    {id: 21,              stopIcon: stopIconPrefix + "dark" + stopIconSurfix},
+        "tan":        {id: 15, reduced: 15, stopIcon: stopIconPrefix + "tan" + stopIconSurfix},
+        "yellow":     {id: 16,              stopIcon: stopIconPrefix + "yellow" + stopIconSurfix},
 	};
 	
 	// Initialize map options
-	var mapOptions = {
+	var mapOptions = 
+    {
 		center: new google.maps.LatLng(36.065475, -94.175148),
 		zoom: 14,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -27,7 +31,7 @@ $(document).ready(function() {
 		mapTypeControl: false
 	};
 	
-	var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 	
 	// holding variables
 	var watchPosition = null; // GPS watcher
@@ -39,22 +43,26 @@ $(document).ready(function() {
 	
 	// detect user location
 	// Try W3C Geolocation
-	if(navigator.geolocation) {
+	if(navigator.geolocation) 
+    {
 		navigator.geolocation.getCurrentPosition(
 			// success
-			function(position) {
+			function(position) 
+            {
 				// change map center to current user location
-				map.panTo(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+				map.panTo( new google.maps.LatLng(position.coords.latitude, position.coords.longitude) );
 				// mark current user location
-				userPosition = new google.maps.Marker({
-					position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
-					icon:{
-						url: 'images/user_icon.svg',
-						scaledSize: new google.maps.Size(40, 40),
-						// anchor: new google.maps.Point(10, 10)
-					},
-					map: map
-				});
+				userPosition = new google.maps.Marker(
+                    {
+					    position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+    					icon: {
+    						url: 'images/user_icon.svg',
+    						scaledSize: new google.maps.Size(40, 40),
+    						// anchor: new google.maps.Point(10, 10)
+    					},
+					    map: map
+				    }
+                );
 				watchPosition = navigator.geolocation.watchPosition(
 					// success: update marker position after successfully update GPS data
 					function(position) {
@@ -72,11 +80,11 @@ $(document).ready(function() {
 	// Bookmark functions
 	if (location.hash != "")
 	{
-		var hashString = location.hash.replace('#', '');
+		var string = location.hash.replace('#', '');
 		// hashtag is valid
-		if (routesID[hashString] != undefined)
+		if ( routesData[string] )
 		{
-			loadRoute( routesID[hashString] );
+			loadRoute( routesData[string] );
 			$('.top-menu').css({display: 'none'});
 		}
 		// hashtag is invalid
@@ -86,58 +94,65 @@ $(document).ready(function() {
 		};
 	};
 	
-	function loadRoute(idPair) {
-		
-		// route with reduced service or not
-		if (Array.isArray(idPair)) {
-			var normalID = idPair[0];
-			var reducedID = idPair[1];
-		}
-		else {
-			var normalID = idPair;
-			var reducedID = idPair;
-		};
-		
-		// load normal path
+	function loadRoute(routeData) {
+        
+        // A normal route data holder
+        var normalRoute = {};
+        
 		$.getJSON('http://campusdata.uark.edu/api/routes?callback=?', 
-			{routeid: normalID}, 
+			{routeid: routeData.id}, 
 			function(response) {
-				if ( response.inService || normalID == reducedID )
-				{
-					showRoute(response);
-					showStops(normalID);
-					
-					if ( response.inService )
-					{
-						showBusPositions(normalID);
-						updateBusPositionTimer = setInterval(function(){
-							showStops(normalID);
-							showBusPositions(normalID);
-						},4000);
-					};
-				}
-				// normal service is not available and routes has reduced service
-				else
-				{
-					// load reduced path
-					$.getJSON('http://campusdata.uark.edu/api/routes?callback=?',
-						{routeid: reducedID},
-						function(response) {
-							showRoute(response);
-							showStops(reducedID);
-							
-							if (response.inService)
-							{
-								showBusPositions(reducedID);
-								updateBusPositionTimer = setInterval(function(){
-									showStops(reducedID);
-									showBusPositions(reducedID);
-								},4000);
-							};
-						});
-				};
-			} // end of getJSON callback
-		); // end of getJSON
+                
+                normalRoute = response;
+                
+                if (response.inService || !routeData.reduced) 
+                // Normal route is in service or reduced route does not exist
+                {
+                    showRoute(response);
+                    showStops(routeData.id, routeData);
+                    if ( response.inService ) 
+                    {
+                        showBusPositions(routeData.id);
+                        updateBusPositionTimer = setInterval(function(){
+                            showStops(routeData.id, routeData);
+                            showBusPositions(routeData.id);
+                        },4000);
+                    };
+                }
+                // Normal route is NOT in service and reduced route is available
+                else 
+                {
+                    // Load reduced path
+                    $.getJSON('http://campusdata.uark.edu/api/routes?callback=?',
+                        {routeid: reducedID},
+                        function(response) 
+                        {
+                            if ( !response.inService ) 
+                            // Reduced service is NOT in service
+                            {
+                                showRoute(normalRoute);
+                                showStops(routeData.id, routeData);
+                            }
+                            // Reduced service is in service
+                            else 
+                            {
+                                showRoute(response);
+                                showStops(routeData.reduced, routeData);
+                                
+                                if (response.inService)
+                                {
+                                    showBusPositions(routeData.reduced);
+                                    updateBusPositionTimer = setInterval(function(){
+                                        showStops(routeData.reduced, routeData);
+                                        showBusPositions(routeData.reduced);
+                                    },4000);
+                                };
+                            };
+                        } // End of getJSON callback
+                    ); // End of getJSON
+                };
+            } // End of getJSON callbakc
+        ); // End of getJSON
 	}
 	
 	function showRoute(route) { // DISPLAY ROUTE PATH & BUS POSITION
@@ -154,16 +169,16 @@ $(document).ready(function() {
 		route_polyline = new google.maps.Polyline({
 			path: routes_path,
 			strokeColor: route.color,
-			strokeOpacity: 0.8,
+			strokeOpacity: 1,
 			strokeWeight: 4
 		});
 		route_polyline.setMap(map);
 	}
 	
-	function showStops(routeID) {
+	function showStops(id, routeData) {
 		
 		$.getJSON('http://campusdata.uark.edu/api/stops?callback=?',
-			{routeids: routeID},
+			{routeids: id},
 			function (response) {
 				
 				// Hold stops DOM node
@@ -182,7 +197,7 @@ $(document).ready(function() {
 						var new_stop = new google.maps.Marker({
 							position: new google.maps.LatLng(lat, lng),
 							icon:{
-								url: 'images/stop_icon.svg',
+								url: 'images/' + routeData.stopIcon,
 								scaledSize: new google.maps.Size(21, 21),
 								anchor: new google.maps.Point(10, 10)
 							},
@@ -300,7 +315,7 @@ $(document).ready(function() {
 		setTimeout(function() {
 			// Fix interface interaction bug
 			
-			loadRoute(routesID[rt_color]);
+			loadRoute(routesData[rt_color]);
 			
 			$('.top-menu').css({display: 'none'});
 		}, 1);
