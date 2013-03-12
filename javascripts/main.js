@@ -124,7 +124,7 @@ $(document).ready(function() {
                 {
                     // Load reduced path
                     $.getJSON('http://campusdata.uark.edu/api/routes?callback=?',
-                        {routeid: reducedID},
+                        {routeid: routeData.reduced},
                         function(response) 
                         {
                             if ( !response.inService ) 
