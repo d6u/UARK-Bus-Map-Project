@@ -44,7 +44,7 @@ $(document).ready(function() {
 	var bus_positions = []; // position markers
 	var updateBusPositionTimer = null; // update bus position timer
 	
-	// detect user location
+	// Detect user location
 	// Try W3C Geolocation
 	if(navigator.geolocation) 
     {
@@ -78,7 +78,7 @@ $(document).ready(function() {
 				);
 			} // end of getCurrentPosition -> success function
 		); // end of getCurrentPosition
-	}
+	};
 	
 	// Bookmark functions
 	if (location.hash != "")
@@ -99,75 +99,74 @@ $(document).ready(function() {
 	
 	function loadRoute(routeData) {
         
-        // A normal route data holder
+        // A holder for non-reduced route data
         var normalRoute = {};
         
-		$.getJSON('http://campusdata.uark.edu/api/routes?callback=?', 
-			{routeid: routeData.id}, 
-			function(response) {
+        // Get non-reduced route data
+        $.getJSON(
+            'http://campusdata.uark.edu/api/routes?callback=?', 
+            {routeid: routeData.id}, 
+            function(response) {
                 
                 normalRoute = response;
                 
-                if (response.inService || !routeData.reduced) 
-                // Normal route is in service or reduced route does not exist
+                // Non-reduced route is NOT in service AND reduced service available
+                if ( !response.inService && routeData.reduced ) 
                 {
-                    showRoute(response);
-                    showStops(routeData.id, routeData);
-                    if ( response.inService ) 
-                    {
-                        showBusPositions(routeData.id);
-                        updateBusPositionTimer = setInterval(function(){
-                            showStops(routeData.id, routeData);
-                            showBusPositions(routeData.id);
-                        },4000);
-                    };
-                }
-                // Normal route is NOT in service and reduced route is available
-                else 
-                {
-                    // Load reduced path
-                    $.getJSON('http://campusdata.uark.edu/api/routes?callback=?',
+                    $.getJSON(
+                        'http://campusdata.uark.edu/api/routes?callback=?',
                         {routeid: routeData.reduced},
                         function(response) 
                         {
-                            if ( !response.inService ) 
-                            // Reduced service is NOT in service
-                            {
-                                showRoute(normalRoute);
-                                showStops(routeData.id, routeData);
-                            }
-                            // Reduced service is in service
-                            else 
-                            {
-                                showRoute(response);
-                                showStops(routeData.reduced, routeData);
-                                
-                                if (response.inService)
-                                {
-                                    showBusPositions(routeData.reduced);
-                                    updateBusPositionTimer = setInterval(function(){
-                                        showStops(routeData.reduced, routeData);
-                                        showBusPositions(routeData.reduced);
-                                    },4000);
-                                };
+                            if ( response.inService ) {
+                                setUpRoute(response, routeData);
+                            } else {
+                                setUpRoute(normalRoute, routeData);
                             };
-                        } // End of getJSON callback
-                    ); // End of getJSON
+                        }
+                    );
+                }
+                // Non-reduced route is in service OR reduced service is NOT available
+                else {
+                    setUpRoute(normalRoute, routeData);
                 };
-            } // End of getJSON callbakc
-        ); // End of getJSON
-	}
+            }
+        );
+    } // End of loadRoute()
+    
+    
+    function setUpRoute (routeResponse, routeData) {
+        
+        showRoute(routeResponse);
+        showStops(routeData.id, routeData);
+        if ( routeResponse.inService ) 
+        {
+            showBusPositions(routeData.id);
+            updateBusPositionTimer = setInterval(function(){
+                showStops(routeData.id, routeData);
+                showBusPositions(routeData.id);
+            },4000);
+        };
+    }
+    
 	
 	function showRoute(route) { // DISPLAY ROUTE PATH & BUS POSITION
 		
 		var points = route.shape.split(',');
 		var routes_path = [];
+        
+        // Bounds object to set map viewport
+        var bounds = new google.maps.LatLngBounds();
+        
 		for (var i = 0; i < points.length; i++) {
 			var pair = {};
 			pair.a = Number(points[i].split(' ')[0]);
 			pair.b = Number(points[i].split(' ')[1]);
 			var path = new google.maps.LatLng(pair.a, pair.b);
 			routes_path[i] = path;
+            
+            // Include path point in Bounds objects
+            bounds.extend(path);
 		}
 		route_polyline = new google.maps.Polyline({
 			path: routes_path,
@@ -176,6 +175,9 @@ $(document).ready(function() {
 			strokeWeight: 4
 		});
 		route_polyline.setMap(map);
+        
+        // Make map viewport fit Bounds
+        map.fitBounds(bounds);
 	}
 	
 	function showStops(id, routeData) {
@@ -190,8 +192,6 @@ $(document).ready(function() {
 				// Not already had stops pinned on map
 				if ( route_stops.length <= 0 )
 				{
-					var bounds = new google.maps.LatLngBounds();
-                    
                     for (var i = 0; i < response.length; i++)
 					{
 						// hold stop object
@@ -211,12 +211,7 @@ $(document).ready(function() {
 					
 						// save stop marker
 						route_stops[i] = new_stop;
-                        
-                        bounds.extend(new google.maps.LatLng(lat, lng));
 					} // end of for loop
-                    
-                    // Set map center
-                    map.fitBounds(bounds);
 				};
 				
 				
