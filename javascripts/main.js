@@ -1,5 +1,8 @@
 var map;
 $(document).ready(function() {
+    
+    // Mixpanel
+    mixpanel.track("Page loaded");
 	
 	// mapping touchend and click event based on whether mobile device
 	var touch = ($.browser.mobile) ? 'touchend' : 'click';
@@ -187,7 +190,9 @@ $(document).ready(function() {
 				// Not already had stops pinned on map
 				if ( route_stops.length <= 0 )
 				{
-					for (var i = 0; i < response.length; i++)
+					var bounds = new google.maps.LatLngBounds();
+                    
+                    for (var i = 0; i < response.length; i++)
 					{
 						// hold stop object
 						var stop = response[i];
@@ -206,7 +211,12 @@ $(document).ready(function() {
 					
 						// save stop marker
 						route_stops[i] = new_stop;
+                        
+                        bounds.extend(new google.maps.LatLng(lat, lng));
 					} // end of for loop
+                    
+                    // Set map center
+                    map.fitBounds(bounds);
 				};
 				
 				
@@ -304,12 +314,14 @@ $(document).ready(function() {
 	// Prevent adding hashtag on default
 	$('a').on('click', function(event) {
 		event.preventDefault();
-        mixpanel.track("Clicked a Link");
 	});
 	
 	// Top menu event
 	$('.route-selector').on(touch, 'a', function (e) {
 		
+        // Select a route
+        mixpanel.track("Select a route");
+        
 		location.hash = $(this).attr('href');
 		var rt_color = $(this).attr('href').replace('#', '');
 		
