@@ -244,7 +244,7 @@ kbd,
 pre,
 samp {
   font-family: monospace, serif;
-  _font-family: "courier new", monospace;
+  _font-family: 'courier new', monospace;
   font-size: 1em;
   line-height: 1.5em;
 }
@@ -567,12 +567,17 @@ table {
 }
 
 /* line 7, ../sass/screen.scss */
+html, body, .container {
+  height: 100%;
+}
+
+/* line 8, ../sass/screen.scss */
 .container {
   min-height: 416px;
   position: relative;
 }
 
-/* line 13, ../sass/screen.scss */
+/* line 14, ../sass/screen.scss */
 .top-menu {
   overflow: hidden;
   *zoom: 1;
@@ -588,7 +593,7 @@ table {
   box-shadow: 0 0 10px 0 #999999;
 }
 
-/* line 25, ../sass/screen.scss */
+/* line 26, ../sass/screen.scss */
 .route-selector a {
   display: block;
   float: left;
@@ -598,31 +603,31 @@ table {
   padding-top: 10px;
   text-decoration: none;
 }
-/* line 33, ../sass/screen.scss */
+/* line 34, ../sass/screen.scss */
 .route-selector a:nth-of-type(4n) {
   border-right: none;
   width: 77px;
 }
-/* line 37, ../sass/screen.scss */
+/* line 38, ../sass/screen.scss */
 .route-selector a:nth-of-type(n+9) {
   border-bottom: none;
 }
-/* line 40, ../sass/screen.scss */
+/* line 41, ../sass/screen.scss */
 .route-selector a:hover {
   background-color: #f2f2f2;
 }
-/* line 41, ../sass/screen.scss */
+/* line 42, ../sass/screen.scss */
 .route-selector a span {
   display: block;
 }
-/* line 42, ../sass/screen.scss */
+/* line 43, ../sass/screen.scss */
 .route-selector a .color-block {
   width: 40px;
   height: 40px;
   border-radius: 20px;
   margin: 0 auto 5px;
 }
-/* line 48, ../sass/screen.scss */
+/* line 49, ../sass/screen.scss */
 .route-selector a .text-block {
   text-align: center;
   font-size: 14px;
@@ -717,13 +722,13 @@ a[href="#yellow"] .text-block {
   color: #fce92b;
 }
 
-/* line 71, ../sass/screen.scss */
+/* line 72, ../sass/screen.scss */
 .control-menu {
   position: absolute;
   z-index: 10;
 }
 
-/* line 80, ../sass/screen.scss */
+/* line 81, ../sass/screen.scss */
 a[href="#show-menu"] {
   top: 5px;
   right: 269px;
@@ -736,13 +741,13 @@ a[href="#show-menu"] {
   -moz-box-shadow: 0 0 10px 0 #999999;
   box-shadow: 0 0 10px 0 #999999;
 }
-/* line 87, ../sass/screen.scss */
+/* line 88, ../sass/screen.scss */
 a[href="#show-menu"] img {
   width: 38px;
   height: 38px;
 }
 
-/* line 92, ../sass/screen.scss */
+/* line 93, ../sass/screen.scss */
 a[href="#route-schedule"] {
   top: 5px;
   right: 5px;
@@ -756,18 +761,18 @@ a[href="#route-schedule"] {
   color: black;
   text-decoration: none;
 }
-/* line 100, ../sass/screen.scss */
+/* line 101, ../sass/screen.scss */
 a[href="#route-schedule"]:hover {
   background-color: #f2f2f2;
 }
 
-/* line 105, ../sass/screen.scss */
+/* line 106, ../sass/screen.scss */
 .control-menu p {
   margin: 0;
   margin-left: 5px;
 }
 
-/* line 110, ../sass/screen.scss */
+/* line 111, ../sass/screen.scss */
 .schedule-info {
   font-size: 14px;
   line-height: 14px;
@@ -775,7 +780,7 @@ a[href="#route-schedule"]:hover {
   margin-top: 6px !important;
 }
 
-/* line 119, ../sass/screen.scss */
+/* line 120, ../sass/screen.scss */
 .current-color {
   background-color: #00a8de;
   height: 44px;
@@ -785,7 +790,7 @@ a[href="#route-schedule"]:hover {
   right: 0;
 }
 
-/* line 129, ../sass/screen.scss */
+/* line 130, ../sass/screen.scss */
 .route-schedule {
   position: absolute;
   top: 0;
@@ -798,7 +803,7 @@ a[href="#route-schedule"]:hover {
   padding: 20px;
 }
 
-/* line 140, ../sass/screen.scss */
+/* line 141, ../sass/screen.scss */
 a[href="#close-route-schedule"] {
   color: white;
   background-color: #00a8de;
@@ -811,7 +816,7 @@ a[href="#close-route-schedule"] {
   text-decoration: none;
 }
 
-/* line 152, ../sass/screen.scss */
+/* line 153, ../sass/screen.scss */
 .stop-container a {
   overflow: hidden;
   *zoom: 1;
@@ -821,24 +826,24 @@ a[href="#close-route-schedule"] {
   color: black;
   line-height: 44px;
 }
-/* line 159, ../sass/screen.scss */
+/* line 160, ../sass/screen.scss */
 .stop-container a:last-child {
   border-bottom: none;
 }
-/* line 162, ../sass/screen.scss */
+/* line 163, ../sass/screen.scss */
 .stop-container a:hover {
   background-color: #f2f2f2;
 }
-/* line 166, ../sass/screen.scss */
+/* line 167, ../sass/screen.scss */
 .stop-container .stop-name {
   float: left;
 }
-/* line 169, ../sass/screen.scss */
+/* line 170, ../sass/screen.scss */
 .stop-container .arriving-time {
   float: right;
 }
 
-/* line 175, ../sass/screen.scss */
+/* line 176, ../sass/screen.scss */
 .map-canvas {
   position: absolute;
   top: 0;

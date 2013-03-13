@@ -4,6 +4,7 @@
 @import "mixins";
 
 // Container
+html, body, .container { height: 100%; }
 .container {
 	min-height: 416px;
 	position: relative;
