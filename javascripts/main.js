@@ -1,6 +1,11 @@
 var map;
 $(document).ready(function() {
     
+    // Hide safari address bar
+    setTimeout(function(){
+        window.scrollTo(0, 1);
+    }, 0);
+    
     // Mixpanel
     mixpanel.track("Page loaded");
 	
